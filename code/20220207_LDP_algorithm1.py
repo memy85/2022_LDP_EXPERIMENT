@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 from argparse import Namespace
 from pathlib import Path
+from multiprocessing import Pool
 
 # Settings
 settings = Namespace(
@@ -11,7 +12,6 @@ settings = Namespace(
     epsilon = "0.1"
     delta = "0.5" # should be in (0,1)
 )
-
 
 
 
@@ -61,5 +61,4 @@ def pdf_BLM(value, D: tuple, b=1, epsilon, delta):
 
 if __name__ == "__main__":
 
-    settings.epsilon
-    pdf_BLM
+    pdf_BLM(value, settings.epsilon)
