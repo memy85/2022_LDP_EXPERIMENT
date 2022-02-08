@@ -60,5 +60,11 @@ def pdf_BLM(value, D: tuple, b=1, epsilon, delta):
     return density
 
 if __name__ == "__main__":
+    
+    # load data 
+    data = np.loadtxt(settings.data_dir.joinpath('data'))
+    range_info = 
 
-    pdf_BLM(value, settings.epsilon)
+    with Pool(5) as p :
+        p.map(pdf_BLM, data)
+        pdf_BLM(value, settings.epsilon)
