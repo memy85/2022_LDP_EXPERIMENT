@@ -57,7 +57,9 @@ def pdf_BLM(value, D: tuple, b=1, epsilon, delta):
 
     e_term = np.exp(-(abs(theRange - value)/b))
     density  = (1/Cq)*(1/(2*b))*(e_term)
-    return density
+
+    perturbed_value = np.random.choice(theRange, 1, p=density)
+    return perturbed_value
 
 if __name__ == "__main__":
     
