@@ -1,0 +1,10 @@
+
+path : /home/wonseok/2022_LDP_EXPERIMENT
+
+epsilon : [0.1, 1, 5, 10, 20]
+
+ylabels : 
+  RBC :  
+  CRP :
+  glucose :
+  BP : 
