@@ -25,6 +25,10 @@ OUTPUT_PATH = PROJ_PATH.joinpath('data/processed/new_lm_simulation')
 
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
+def change_column_name(data):
+    return data.rename(columns={'labresulttext':'value'})
+    
+
 #%%
 def load_original_data(name):
     '''
@@ -33,6 +37,8 @@ def load_original_data(name):
     '''
     with open(INPUT_PATH.joinpath(f'{name}.pkl'), 'rb') as f:
         ori_data = pickle.load(f)
+    pool = ProcessingPool(8)
+    ori_data = pool.map(change_column_name, ori_data)
     patients = len(ori_data)
     
     return ori_data, patients
@@ -42,7 +48,7 @@ def transform_data(name, epsilon : list):
     ori_data, patients = load_original_data(name)
     
     print('divided patients')
-    print(f'total patient counts : {len(patients)}')
+    print(f'total patient counts : {patients}')
     
     def give_noise(data, eps):
         

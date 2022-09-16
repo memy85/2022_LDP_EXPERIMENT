@@ -40,8 +40,9 @@ glucose = glucose.rename(columns = {"labresultext":"value"})
 RBC = RBC.rename(columns = {"labresultext":"value"})
 
 #%%
+data = {'BP':BP, 'CRP':CRP, 'glucose':glucose, 'RBC':RBC}
+
 def load_original_data(name):
-    data = {'BP':BP, 'CRP':CRP, 'glucose':glucose, 'RBC':RBC}
     ori_data, patients = data[name], set(data[name].patientunitstayid.unique())
     divided_by_patients = [ori_data[ori_data.patientunitstayid == pt] for pt in list(patients) if len(ori_data[ori_data.patientunitstayid == pt]) > 1]
     return divided_by_patients
