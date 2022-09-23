@@ -35,12 +35,18 @@ RBC = RBC.dropna().reset_index(drop=True)
 
 #%%
 BP = BP.rename(columns = {"noninvasivesystolic":"value"})
-CRP = CRP.rename(columns = {"labresultext":"value"})
-glucose = glucose.rename(columns = {"labresultext":"value"})
-RBC = RBC.rename(columns = {"labresultext":"value"})
+CRP = CRP.rename(columns = {"labresulttext":"value"})
+glucose = glucose.rename(columns = {"labresulttext":"value"})
+RBC = RBC.rename(columns = {"labresulttext":"value"})
 
 #%%
+CRP = CRP.replace('>|<', '', regex=True)
+glucose = glucose.replace('>|<', '', regex=True)
+RBC = RBC.replace('>|<', '', regex=True)
+
 data = {'BP':BP, 'CRP':CRP, 'glucose':glucose, 'RBC':RBC}
+
+#%%
 
 def load_original_data(name):
     ori_data, patients = data[name], set(data[name].patientunitstayid.unique())
@@ -65,8 +71,18 @@ to_pickle(output_path.joinpath('RBC.pkl'), rbc_list)
 to_pickle(output_path.joinpath('glucose.pkl'), glucose_list)
 
 print('done')
-# BP.to_feather(output_path.joinpath('BP.feather'))
-# CRP.to_feather(output_path.joinpath('CRP.feather'))
-# glucose.to_feather(output_path.joinpath('glucose.feather'))
-# RBC.to_feather(output_path.joinpath('RBC.feather'))
+
+
+#%%
+import pickle
+
+with open(output_path.joinpath('CRP.pkl'), 'rb') as f:
+   data = pickle.load(f)
+
+# %%
+import pandas as pd
+data = pd.concat(data)
+#%%
+
+data['value'].astype('float')
 

@@ -37,30 +37,27 @@ def load_original_data(name):
     '''
     with open(INPUT_PATH.joinpath(f'{name}.pkl'), 'rb') as f:
         ori_data = pickle.load(f)
-    pool = ProcessingPool(8)
-    ori_data = pool.map(change_column_name, ori_data)
     patients = len(ori_data)
     
     return ori_data, patients
 
+def give_noise(data, eps):
+    data['value'] = data['value'].astype('float')
+    dp_obj = tdp.TimeDP(eps, 0, 'bounded_laplace')
+    dp_creator = tdp.Vector_creator(data['value'], dp_obj)
+    return dp_creator.new_vector
+
+def get_changed_results(data, epsilon=epsilon):
+    for eps in epsilon :
+        data[f'value_{eps}']= give_noise(data, eps)
+    return data
+
 #%%
-def transform_data(name, epsilon : list):
+def transform_data(name):
     ori_data, patients = load_original_data(name)
     
     print('divided patients')
     print(f'total patient counts : {patients}')
-    
-    def give_noise(data, eps):
-        
-        dp_obj = tdp.TimeDP(eps, 0, 'bounded_laplace')
-        dp_creator = tdp.Vector_creator(data['value'], dp_obj)
-    
-        return dp_creator.new_vector
-    
-    def get_changed_results(data, epsilon=epsilon):
-        for eps in epsilon :
-            data[f'value_{eps}']= give_noise(data, eps)
-        return data
     
     pool = ProcessingPool(8)
     all_results = pool.map(get_changed_results, ori_data)
@@ -77,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--name", dest="name", action="store")          
     args = parser.parse_args()
 
-    result = transform_data(args.name, epsilon)
+    result = transform_data(args.name)
     result = result.reset_index(drop=True)
 
     #%%

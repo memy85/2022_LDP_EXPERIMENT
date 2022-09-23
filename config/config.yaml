@@ -1,10 +1,15 @@
 
 path : /home/wonseok/2022_LDP_EXPERIMENT
 
-epsilon : [0.1, 1, 5, 10, 20]
+seed : 0
+epsilon : [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4]
 
 ylabels : 
-  RBC :  
-  CRP :
-  glucose :
-  BP : 
+  RBC :  M/μL
+  BP : mmHg
+
+title :
+  RBC : Red Blood Cell
+  BP : Noninvasive Systolic Blood Pressure
+
+distance : 0.5

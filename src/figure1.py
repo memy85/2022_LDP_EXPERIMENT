@@ -6,9 +6,13 @@ import seaborn as sns
 from pathlib import Path
 import yaml
 import os, sys
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator
+import pylab
 import argparse
 from utils import *
+
 
 #%%
 config = load_config()
@@ -30,47 +34,53 @@ def calculate_mse(data):
     epsilon = config['epsilon']
     mse_list = []
     for eps in epsilon:
-        print(eps)
-        mse = sum((data['value'] - data[f'value_{eps}'])**2) / len(data)
+        mse = ((data['value'] - data[f'value_{eps}'])**2).mean()
         mse_list.append(mse)
     return mse_list
 
 #%%
-# mse_lm = calculate_mse(data)
-# mse_new_lm = calculate_mse()
-
-#%%
-# mse
-# #%%
-
-# plt.plot(mse_lm, style='dotted')
-# plt.plot(mse_new_lm, style='dashdot')
-# plt.xlabel('epsilon')
-
-
-#%%
 def main():
     
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--name", dest="name", action="store")
-    args = parser.parse_args()
+    list_of_args = ['BP','RBC']
     
-    data = load_lm_data(args.name)
-    mse_lm = calculate_mse(data)
-    mse_new_lm = calculate_mse()
-
-    #%%
-
-    plt.plot(mse_lm, style='dotted')
-    plt.plot(mse_new_lm, style='dashdot')
-    plt.xticks([0.1, 1, 5, 10, 20])
-    plt.xlabel('epsilon')
-    plt.show()
+    lm_datas = [load_lm_data(name) for name in list_of_args]
+    new_lm_datas = [load_new_lm_data(name) for name in list_of_args]
     
-    plt.savefig(fig_path.joinpath(f'fig1_{args.name}.png'), 
+    mses = []
+    new_mses = []
+    for data, new_data in zip(lm_datas, new_lm_datas):
+        
+        mses.append(calculate_mse(data))
+        new_mses.append(calculate_mse(new_data))
+    
+    xticks = [str(i) for i in config['epsilon']]
+
+    fig, ax = plt.subplots(figsize = (10,10), nrows=2, ncols=1)
+
+    plt.rcParams.update({'font.size':20})
+    
+    for idx, (mse_lm, mse_new_lm) in enumerate(zip(mses, new_mses)):
+        name = list_of_args[idx]
+        
+        ax[idx].plot(xticks, mse_lm, 'o-', color='black', label='DP')
+        ax[idx].plot(xticks, mse_new_lm, 'o--', color='black', label='TDP')
+        ax[idx].set_title(config['title'][name])
+        ax[idx].set_ylabel(config['ylabels'][name])
+        ax[idx].set_xlabel(f'epsilon [$\epsilon$]')
+        ax[idx].legend(loc='upper right')
+    
+    fig.tight_layout()
+    # plt.show()
+    
+    plt.savefig(fig_path.joinpath(f'fig1.png'), 
                 dpi=200,
                 bbox_inches='tight')
     pass
+#%%
+main()
+
+#%%
 
 if __name__ == "__main__":    
     main()
+# %%
