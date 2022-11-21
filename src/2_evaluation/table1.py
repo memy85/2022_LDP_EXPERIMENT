@@ -13,7 +13,11 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator
 import pylab
 import argparse
 
-from utils import *
+PROJECT_PATH = Path(__file__).parents[2]
+os.sys.path.append(PROJECT_PATH.as_posix())
+
+from src.utils import *
+config = load_config()
 
 #%%
 

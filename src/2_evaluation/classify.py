@@ -4,10 +4,13 @@ import pickle
 import argparse
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, precision_score, recall_score, confusion_matrix, f1_score, accuracy_score
+import os, sys
+from pathlib import Path
 
-from utils import *
-#%%
+PROJECT_PATH = Path(__file__).parents[2]
+os.sys.path.append(PROJECT_PATH.as_posix())
 
+from src.utils import *
 config = load_config()
 
 #%%
@@ -35,7 +38,8 @@ def write_dict(name, types, epsilon, precision, sensitivity, specificity, f1scor
     
     with open(output_path.joinpath(f'{name}_{types}_{epsilon}.pkl'), 'wb') as f:
         pickle.dump(book, f)
-    
+#%%
+
 
 if __name__ == "__main__":
     
@@ -54,6 +58,7 @@ if __name__ == "__main__":
 
     #%% 
     clf = RandomForestClassifier(max_depth=2, random_state=config['seed'])
+    
     clf.fit(x_train, y_train)
 
     y_pred = clf.predict(x_test)

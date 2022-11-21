@@ -11,10 +11,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator
 import pylab
 import argparse
-from utils import *
 
+PROJECT_PATH = Path(__file__).parents[2]
+os.sys.path.append(PROJECT_PATH.as_posix())
 
-#%%
+from src.utils import *
 config = load_config()
 
 PROJ_PATH = Path(config['path'])
@@ -30,17 +31,19 @@ def load_new_lm_data(name):
     return pd.read_feather(new_lm_sim_data.joinpath(f'{name}.feather'))
 
 #%%
-def calculate_mse(data):
+def calculate_mse(table):
     epsilon = config['epsilon']
     mse_list = []
     for eps in epsilon:
-        mse = ((data['value'] - data[f'value_{eps}'])**2).mean()
+        mse = ((table['value'] - table[f'value_{eps}'])**2).mean()
         mse_list.append(mse)
     return mse_list
+
 
 #%%
 def main():
     
+    # list_of_args = ['BP','RBC','glucose','CRP']
     list_of_args = ['BP','RBC']
     
     lm_datas = [load_lm_data(name) for name in list_of_args]
@@ -54,13 +57,21 @@ def main():
         new_mses.append(calculate_mse(new_data))
     
     xticks = [str(i) for i in config['epsilon']]
-
+    
+    plt.rcParams.update({'font.size':12})
     fig, ax = plt.subplots(figsize = (10,10), nrows=2, ncols=1)
-
-    plt.rcParams.update({'font.size':20})
     
     for idx, (mse_lm, mse_new_lm) in enumerate(zip(mses, new_mses)):
         name = list_of_args[idx]
+        # r = idx // 2
+        # c = idx % 2
+        
+        # ax[r,c].plot(xticks, mse_lm, 'o-', color='black', label='DP')
+        # ax[r,c].plot(xticks, mse_new_lm, 'o--', color='black', label='TDP')
+        # ax[r,c].set_title(config['title'][name])
+        # ax[r,c].set_ylabel(config['ylabels'][name])
+        # ax[r,c].set_xlabel(f'epsilon [$\epsilon$]')
+        # ax[r,c].legend(loc='upper right')
         
         ax[idx].plot(xticks, mse_lm, 'o-', color='black', label='DP')
         ax[idx].plot(xticks, mse_new_lm, 'o--', color='black', label='TDP')
@@ -77,7 +88,6 @@ def main():
                 bbox_inches='tight')
     pass
 #%%
-main()
 
 #%%
 

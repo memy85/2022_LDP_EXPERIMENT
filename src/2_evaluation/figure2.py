@@ -13,9 +13,10 @@ import seaborn as sns
 import pylab
 import argparse
 
-from utils import *
+PROJECT_PATH = Path(__file__).parents[2]
+os.sys.path.append(PROJECT_PATH.as_posix())
 
-#%%
+from src.utils import *
 config = load_config()
 
 PROJ_PATH = Path(config['path'])
@@ -65,7 +66,6 @@ def plot(name):
 
     plt.tight_layout()
     # plt.show()/
-    
     plt.savefig(fig_path.joinpath(f'fig2_{name}.png'),
                 dpi=200,
                 bbox_inches='tight')
@@ -74,8 +74,11 @@ def plot(name):
 #%%
 
 if __name__ == "__main__":
-    plot('RBC')    
-    plot('BP')    
+
+    for variables in ['RBC','BP','CRP','glucose'] :
+        plot(variables)
+        print(f'plot {variables}')
+
     
 #%%
 

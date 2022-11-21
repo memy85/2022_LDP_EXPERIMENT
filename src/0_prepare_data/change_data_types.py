@@ -17,8 +17,16 @@ import numpy as np
 from pathos.pools import ParallelPool
 from pathos.multiprocessing import ProcessPool
 
-from utils import *
-from privacy import *
+from pathlib import Path
+import os, sys
+# changed
+
+#%%
+PROJECT_PATH = Path(__file__).parents[1]
+DATA_PATH = PROJECT_PATH.joinpath('data')
+
+from src.utils import *
+from src.privacy import *
 
 #%%
 
@@ -35,7 +43,6 @@ fig_path = PROJ_PATH.joinpath('figures')
 
 
 #%%
-
 def load_pickle(path):
     with open(path, 'rb') as f:
         return pickle.load(f)

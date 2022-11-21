@@ -12,3 +12,4 @@ python3 process_for_figures.py --name RBC --type new_lm & python3 process_for_fi
 cd ../
 
 echo "Process finished"
+

@@ -7,9 +7,12 @@ from pathlib import Path
 import math
 import argparse
 import random
+import os,sys
 
-from utils import *
+PROJECT_PATH = Path(__file__).parents[2]
+os.sys.path.append(PROJECT_PATH.as_posix())
 
+from src.utils import *
 config = load_config()
 
 #%%
@@ -39,6 +42,7 @@ def equalize_data_length(data, epsilon):
         value = 'value'
     else :
         value = f'value_{epsilon}'
+    
     max_length = data['patientunitstayid'].value_counts().max()
     number_of_patients = len(data['patientunitstayid'].unique())
     
@@ -50,19 +54,14 @@ def equalize_data_length(data, epsilon):
         central[idx,0:length] = patient_data
     return central
 
-#%%
-
-
-
-
-#%%
 
 def create_train_test(numpy_data : np.array, new_numpy_data):
     number_of_patients = len(numpy_data)
     random.seed(config['seed'])
     
     indices = [idx for idx in range(number_of_patients)]
-    new_indices = random.sample(indices, math.floor(number_of_patients/10))
+    random.shuffle(indices)
+    new_indices = indices
     cut_index = math.floor(len(new_indices)*0.8)
     
     train_idx, test_idx = new_indices[:cut_index], new_indices[cut_index:]
@@ -109,4 +108,4 @@ def main():
 #%%
 
 if __name__=="__main__":
-    main()
+    main() 

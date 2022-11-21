@@ -5,11 +5,21 @@ seed : 0
 epsilon : [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4]
 
 ylabels : 
-  RBC :  M/μL
+  RBC :  M/mcL
   BP : mmHg
+  CRP : mg/dL
+  glucose : mg/dL
 
 title :
   RBC : Red Blood Cell
   BP : Noninvasive Systolic Blood Pressure
+  CRP : C-reactive Protein
+  glucose : glucose
 
 distance : 0.5
+
+scale :
+  BP : 292
+  RBC : 43.7
+  glucose : 4000
+  CRP : 577.8
