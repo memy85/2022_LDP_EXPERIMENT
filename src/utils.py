@@ -14,7 +14,7 @@ def load_config():
 
 def load_data(name):
     '''
-    data names : BP, CRP, glucose, RBC
+    data names : BP, CRP, glucose, RBC, CREATININE
     '''
     config = load_config()
     PROJ_PATH = Path(config['path'])

@@ -44,7 +44,7 @@ def calculate_mse(table):
 def main():
     
     # list_of_args = ['BP','RBC','glucose','CRP']
-    list_of_args = ['BP','RBC']
+    list_of_args = ['BP','RBC', 'glucose', 'CRP','creatinine']
     
     lm_datas = [load_lm_data(name) for name in list_of_args]
     new_lm_datas = [load_new_lm_data(name) for name in list_of_args]
@@ -59,7 +59,7 @@ def main():
     xticks = [str(i) for i in config['epsilon']]
     
     plt.rcParams.update({'font.size':12})
-    fig, ax = plt.subplots(figsize = (10,10), nrows=2, ncols=1)
+    fig, ax = plt.subplots(figsize = (10,10), nrows=3, ncols=1)
     
     for idx, (mse_lm, mse_new_lm) in enumerate(zip(mses, new_mses)):
         name = list_of_args[idx]
@@ -75,6 +75,7 @@ def main():
         
         ax[idx].plot(xticks, mse_lm, 'o-', color='black', label='DP')
         ax[idx].plot(xticks, mse_new_lm, 'o--', color='black', label='TDP')
+        ax[idx].set_ylim([0, 10])
         ax[idx].set_title(config['title'][name])
         ax[idx].set_ylabel(config['ylabels'][name])
         ax[idx].set_xlabel(f'epsilon [$\epsilon$]')
@@ -83,12 +84,10 @@ def main():
     fig.tight_layout()
     # plt.show()
     
-    plt.savefig(fig_path.joinpath(f'fig1.png'), 
+    plt.savefig(fig_path.joinpath(f'fig1_supplement.png'), 
                 dpi=200,
                 bbox_inches='tight')
     pass
-#%%
-
 #%%
 
 if __name__ == "__main__":    

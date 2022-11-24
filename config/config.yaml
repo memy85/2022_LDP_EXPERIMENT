@@ -9,12 +9,14 @@ ylabels :
   BP : mmHg
   CRP : mg/dL
   glucose : mg/dL
+  creatinine : mg/dL
 
 title :
   RBC : Red Blood Cell
   BP : Noninvasive Systolic Blood Pressure
   CRP : C-reactive Protein
   glucose : glucose
+  creatinine : creatinine
 
 distance : 0.5
 

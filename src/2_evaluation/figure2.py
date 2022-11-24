@@ -29,58 +29,70 @@ table1 = pd.read_csv(input_path.joinpath('table1.csv'))
 table1 = table1.replace('lm', 'DP')
 table1 = table1.replace('new_lm','TDP')
 
-#%%
 def give_data(name):
     data = table1[table1.name == name]
     return data
 
+book = {"epsilon":
+    {0.1 : 1, 0.2 : 2, 0.4 : 3,
+     0.8 : 4, 1.6 : 5, 3.2 : 6,
+     6.4 : 7}
+    }
+
 def plot(name):
     data = give_data(name)
+    data = data.copy().replace(book)
     
-    fig, axes = plt.subplots(1,4, figsize=(7,3))
-    plt.rcParams.update({'font.size':12})
+    plt.style.use('ggplot')
+    sns.set(font_scale=1.3)
+    fig, axes = plt.subplots(4,1, figsize=(10, 14), sharex=True, sharey=True)
+    plt.rcParams.update({'font.size':15})
+    markers = ["o","o"]
+    size = 8
+    xtick_size = 15
+    ytick_size = 10
+    palettes = ['black','black']
+    
 # sns.set_style('white')
-    s1 = sns.boxplot(data=data, x = 'types', y='accuracy', color='gray', hue ='types',ax=axes[0])
+
+    s1 = sns.lineplot(data=data, x = 'epsilon', y='accuracy', markers=markers, style='types', 
+                      palette=palettes, hue ='types',ax=axes[0], markersize=size, legend=False)
     s1.set_title('Accuracy')
-    s1.set(xlabel=None)
-    s1.set(ylabel=None)
-    s1.legend([])
+    s1.set_xticks([1,2,3,4,5,6,7])
+    s1.set_xticklabels(['0.1', '0.2', '0.4', '0.8', '1.6', '3.2', '6.4'], fontsize=xtick_size)
+    # s1.set_ytick(fontsize=ytick_size)
 
-    s2 = sns.boxplot(data=data, x = 'types', y='sensitivity', color='gray',hue ='types',ax=axes[1])
+    s2 = sns.lineplot(data=data, x = 'epsilon', y='sensitivity', markers=markers, style='types', 
+                      palette=palettes,hue ='types',ax=axes[1], markersize=size, legend=False)
+    s2.set_xticks([1,2,3,4,5,6,7])
+    s2.set_xticklabels(['0.1', '0.2', '0.4', '0.8', '1.6', '3.2', '6.4'], fontsize=xtick_size)
     s2.set_title('Sensitivity')
-    s2.set(ylabel=None)
-    s2.set(xlabel=None)
-    s2.legend([])
 
-    s3 = sns.boxplot(data=data, x = 'types', y='specificity', color='gray', hue ='types',ax=axes[2])
+    s3 = sns.lineplot(data=data, x = 'epsilon', y='specificity', markers=markers, style='types', 
+                      palette=palettes, hue ='types',ax=axes[2], markersize=size, legend=False)
+    s3.set_xticks([1,2,3,4,5,6,7])
+    s3.set_xticklabels(['0.1', '0.2', '0.4', '0.8', '1.6', '3.2', '6.4'], fontsize=xtick_size)
     s3.set_title('Specificity')
-    s3.set(ylabel=None)
-    s3.set(xlabel=None)
-    s3.legend([])
+    s3.set_ylim([0.2, 1.1])
 
-    s4 = sns.boxplot(data=data, x = 'types', y='f1_score', color='gray', hue ='types',ax=axes[3])
+    s4 = sns.lineplot(data=data, x = 'epsilon', y='f1_score', markers=markers ,  style='types', 
+                      palette=palettes, hue ='types',ax=axes[3], markersize=size, legend=False)
+    s4.set_xticks([1,2,3,4,5,6,7])
+    s4.set_xticklabels(['0.1', '0.2', '0.4', '0.8', '1.6', '3.2', '6.4'], fontsize=xtick_size)
     s4.set_title('F1 score')
-    s4.set(ylabel=None)
-    s4.set(xlabel=None)
-    s4.legend([])
-
+    
+    plt.xlim(0.8, 7.2)
+    plt.legend(['DP','TDP'],bbox_to_anchor=(0.65, -0.2),ncol=2)
     plt.tight_layout()
-    # plt.show()/
+    
     plt.savefig(fig_path.joinpath(f'fig2_{name}.png'),
                 dpi=200,
                 bbox_inches='tight')
-#%%
 
-#%%
+
 
 if __name__ == "__main__":
 
-    for variables in ['RBC','BP','CRP','glucose'] :
+    for variables in ['BP','CRP','glucose','RBC','creatinine'] :
         plot(variables)
         print(f'plot {variables}')
-
-    
-#%%
-
-
-

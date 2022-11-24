@@ -1,5 +1,4 @@
 #%%
-from ast import arg
 import pandas as pd
 import pickle
 import numpy as np
@@ -94,6 +93,18 @@ def main():
     args = parser.parse_args()
     
     data = load_data(args.name, args.type)
+    process_data_path = PROJ_PATH.joinpath('data/processed/process_data')
+    
+    with open(process_data_path.joinpath(f'{args.name}.pkl'), 'rb') as f:
+        original = pickle.load(f)
+
+    original = original.replace(0, np.nan)
+    original = original.melt('patientunitstayid', value_vars = original.columns[1:]).sort_values(by=['patientunitstayid','timestep'])
+
+    original = original.sort_values(by=['patientunitstayid','timestep'])
+    msk = ~original[['value']].isna()
+    msk = msk.reset_index(drop=True).value.values
+    data = data[msk].copy()
     
     np_data1 = equalize_data_length(data, 0)
     np_data2 = equalize_data_length(data, args.epsilon)

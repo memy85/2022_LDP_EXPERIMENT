@@ -10,6 +10,7 @@ from multiprocessing import Pool
 import argparse
 import pickle
 from itertools import repeat
+from sklearn.preprocessing import MinMaxScaler
 
 # import syndp.algorithm.timedp_algorithm as tdp
 # from syndp.mechanism.bounded_laplace_mechanism import boundedlaplacemechanism as blm
@@ -46,18 +47,23 @@ def load_original_data(name):
     
     return ori_data, patients
 
-
 #%%
 def give_noise(data, eps):
     syn = data.copy()
     vals = syn.values[:, 1:]
+    
+    scaler = MinMaxScaler((-1,1))
+    scaler.fit(vals)
+    scaled = scaler.transform(vals)
     
     vals = list(vals)
     # apply original timeseries differential privacy
     # new_vals = np.apply_along_axis(odp.timeseries_dp, 1, vals, eps)
     with Pool(16) as p:
         new_values = p.starmap(odp.timeseries_dp, zip(vals, repeat(eps)))
-        new_values = np.array(new_values)
+    
+    new_values = np.array(new_values)
+    new_values = np.round(scaler.inverse_transform(new_values))
 
     bone = data[['patientunitstayid']]
     new_values = pd.DataFrame(new_values)
@@ -94,7 +100,7 @@ if __name__ == "__main__":
     # parser.add_argument("-n", "--name", dest="name", action="store")          
     # args = parser.parse_args()
 
-    for name in ['BP','CRP','CRP', 'glucose']:
+    for name in ['CRP','BP','glucose','RBC','creatinine']:
         print(f'starting {name} ...')
         result = transform_data(name)
         result = result.reset_index(drop=True)

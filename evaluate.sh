@@ -10,9 +10,16 @@ function figure1 {
 }
 
 function figure2 {
-    bash 2_preprocess4fig2.sh
+    # echo "preprocessing .. "
+    # bash 2_preprocess4fig2.sh
+
+    echo "testing classification .."
     bash test_classification.sh
+
+    echo "making table 1 .."
     python3 src/2_evaluation/table1.py
+
+    echo "making figure 2 .."
     python3 src/2_evaluation/figure2.py
 }
 

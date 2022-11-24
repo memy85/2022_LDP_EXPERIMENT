@@ -38,12 +38,11 @@ def write_dict(name, types, epsilon, precision, sensitivity, specificity, f1scor
     
     with open(output_path.joinpath(f'{name}_{types}_{epsilon}.pkl'), 'wb') as f:
         pickle.dump(book, f)
+
 #%%
 
-
-if __name__ == "__main__":
+def main():
     
-#%% 
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--name", dest="name", action="store")          
     parser.add_argument("-t", "--type", dest="type", action="store")          
@@ -74,9 +73,6 @@ if __name__ == "__main__":
     write_dict(args.name, args.type, args.epsilon, precision, sensitivity, specificity, f1, accuracy)
     print('done')
     
-#%%
-
-
-
-
+if __name__ == "__main__":
+    main()
 

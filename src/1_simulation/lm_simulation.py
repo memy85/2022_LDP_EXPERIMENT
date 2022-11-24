@@ -9,6 +9,7 @@ from pathos.multiprocessing import ProcessingPool, _ProcessPool
 import argparse
 import pickle
 from itertools import repeat
+from sklearn.preprocessing import MinMaxScaler
 
 # import syndp.algorithm.original_timedp as odp
 # import syndp.algorithm.timedp_algorithm as tdp
@@ -43,8 +44,9 @@ def load_original_data(name):
         ori_data = pickle.load(f)
     patients = len(ori_data)
     return ori_data, patients
-#%%
 
+
+#%%
 def give_noise(data, eps, scale):
     data['value'] = data['value'].astype('float')
     copied_data = data.copy() 
@@ -52,8 +54,16 @@ def give_noise(data, eps, scale):
     length = len(copied_data['value'])
     scale = scale/eps
     
+    values = np.array(copied_data['value']).reshape(-1,1)
+    
+    scaler = MinMaxScaler((-1,1))
+    scaler.fit(values.reshape(-1,1))
+    scaled = scaler.transform(values.reshape(-1,1))
+    
     rv = np.random.laplace(0, scale, length)
-    noised_value = copied_data['value'] + rv
+    noised_value = scaled.reshape(-1) + rv
+    noised_value = noised_value.reshape(-1,1)
+    noised_value = np.round(scaler.inverse_transform(noised_value))
     # noised_value = lpm(copied_data['value'], 1, eps)
     return noised_value
 
@@ -66,6 +76,7 @@ def get_changed_results(data, scale, epsilon=epsilon):
 #%%
 def transform_data(name):
     ori_data, patients = load_original_data(name)
+    
     min_val, max_val = ori_data.values[:,1:].min(), ori_data.values[:,1:].max()
     scales = abs(max_val - min_val)
     
@@ -74,7 +85,6 @@ def transform_data(name):
     
     print('divided patients')
     print(f'total patient counts : {patients}')
-    
     
     all_results = get_changed_results(ori_data, scales)
     return all_results
@@ -86,7 +96,9 @@ if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
     # parser.add_argument("-n", "--name", dest="name", action="store")          
     # args = parser.parse_args()
-    for name in ['BP','CRP','CRP', 'glucose']:
+    
+    for name in ['CRP','BP','glucose','RBC','creatinine']:
+        
         print(f'starting {name} ...')
         result = transform_data(name)
         result = result.reset_index(drop=True)
